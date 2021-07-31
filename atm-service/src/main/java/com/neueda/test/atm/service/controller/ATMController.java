@@ -41,13 +41,13 @@ public class ATMController {
 
 	@PostMapping
 	public ResponseEntity<ATMCashDetails> initializeAmountinATM(@RequestBody final ATMCashDetails atmCashDetails) {
-		log.info("Initializing currency in ATM cash box: %s", atmCashDetails);
+		log.info("Initializing currency in ATM cash box: {}", atmCashDetails);
 		return new ResponseEntity<ATMCashDetails>(atmService.initializeAmountinATM(atmCashDetails), HttpStatus.CREATED);
 	}
 
 	@PostMapping("/withdraw")
 	public ResponseEntity<TransactionDetails> withdrawAmount(@RequestBody final WithdrawalRequest withdrawalRequest) {
-		log.info("Withdrawal request received from user: %s", withdrawalRequest);
+		log.info("Withdrawal request received from user: {}", withdrawalRequest);
 		validatorService.validate(withdrawalRequest);
 		return new ResponseEntity<TransactionDetails>(atmService.withdrawAmount(withdrawalRequest), HttpStatus.OK);
 	}
@@ -55,7 +55,7 @@ public class ATMController {
 	@GetMapping("/checkBalance/accountId/{accountId}/pin/{pin}")
 	public ResponseEntity<AccountBalance> getAccountBalance(@PathVariable("accountId") final long accountId,
 			@PathVariable("pin") final int pin) {
-		log.info("Fetch account balance request received, accountId: %s", accountId);
+		log.info("Fetch account balance request received, accountId: {}", accountId);
 		return new ResponseEntity<AccountBalance>(atmService.getAccountBalance(accountId, pin), HttpStatus.OK);
 	}
 

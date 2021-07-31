@@ -19,7 +19,7 @@ public class FiftyCurrencyDispenser implements CurrencyDispenser {
 	@Override
 	public Integer dispense(final ATMCashDetails atmCashDetails, final TransactionDetails transactionDetails,
 			Integer amount) {
-		log.debug("Running Fify currency dispenser, ATMCashDetails: %s, TransactionDetails: %s, amount: ",
+		log.debug("Running Fify currency dispenser, ATMCashDetails: {}, TransactionDetails: {}, amount: ",
 				atmCashDetails, transactionDetails, amount);
 		if (amount >= CurrencyValue.FIFTY.value()) {
 			final int numberToBeWithdrawn = amount / CurrencyValue.FIFTY.value();

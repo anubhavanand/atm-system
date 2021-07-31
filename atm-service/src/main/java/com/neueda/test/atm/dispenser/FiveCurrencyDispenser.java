@@ -18,7 +18,7 @@ public class FiveCurrencyDispenser implements CurrencyDispenser {
 
 	@Override
 	public Integer dispense(final ATMCashDetails atmCashDetails, final TransactionDetails transactionDetails, Integer amount) {
-		log.debug("Running Five currency dispenser, ATMCashDetails: %s, TransactionDetails: %s, amount: ",
+		log.debug("Running Five currency dispenser, ATMCashDetails: {}, TransactionDetails: {}, amount: ",
 				atmCashDetails, transactionDetails, amount);
 		if (amount >= CurrencyValue.FIVE.value()) {
 			final int numberToBeWithdrawn = amount / CurrencyValue.FIVE.value();

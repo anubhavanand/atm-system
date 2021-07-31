@@ -29,7 +29,7 @@ public class SufficientATMCashValidator implements Validator<WithdrawalRequest> 
 	public boolean isValid(final WithdrawalRequest withdrawalRequest) {
 		final ATMCashDetails atmDetails = atmRepository.getById(1L);
 		if (withdrawalRequest.getAmount() > getAvailableAmountInATM(atmDetails)) {
-			log.info("Validation failed: %s, WithdrawalRequest: %s",
+			log.info("Validation failed: {}, WithdrawalRequest: {}",
 					SufficientATMCashValidator.class.getSimpleName(), withdrawalRequest);
 			throw new ValidationFailedException(HttpStatus.BAD_REQUEST, Message.INSUFFICIENT_ATM_CASH.message());
 		}

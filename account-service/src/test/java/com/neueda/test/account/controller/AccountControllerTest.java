@@ -1,6 +1,5 @@
 package com.neueda.test.account.controller;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -18,7 +17,6 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.neueda.test.account.VO.AccountBalance;
-import com.neueda.test.account.VO.AccountDebitInfo;
 import com.neueda.test.account.entity.AccountDetails;
 import com.neueda.test.account.service.AccountService;
 

@@ -33,7 +33,7 @@ public class SufficientAccountBalanceValidator implements Validator<WithdrawalRe
 								+ withdrawalRequest.getAccountId() + UrlConstants.PIN.value() + withdrawalRequest.getPin(),
 						AccountBalance.class);
 		if (accountBalance.getMaxWithdrawalAmount() < withdrawalRequest.getAmount()) {
-			log.info("Validation failed: %s, WithdrawalRequest: %s, AccountBalance: %s",
+			log.info("Validation failed: {}, WithdrawalRequest: {}, AccountBalance: {}",
 					SufficientAccountBalanceValidator.class.getSimpleName(), withdrawalRequest, accountBalance);
 			throw new ValidationFailedException(HttpStatus.BAD_REQUEST, Message.INSUFFICIENT_ACCOUNT_BALANCE.message());
 		}

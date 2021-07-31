@@ -28,7 +28,7 @@ public class WithdrawalRequestValidationService implements ValidationService<Wit
 
 	@Override
 	public boolean validate(final WithdrawalRequest withdrawalRequest) {
-		log.debug("Validating WithdrawalRequest: %s", withdrawalRequest);
+		log.debug("Validating WithdrawalRequest: {}", withdrawalRequest);
 		for(Validator<WithdrawalRequest> validator : withdrawalRequestValidations) {
 			boolean valid = validator.isValid(withdrawalRequest);
 			if(!valid) {

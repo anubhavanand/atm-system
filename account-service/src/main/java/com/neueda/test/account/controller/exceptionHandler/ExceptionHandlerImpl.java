@@ -20,7 +20,7 @@ public class ExceptionHandlerImpl {
 	
 	@ExceptionHandler(Exception.class)
 	public ResponseEntity<?> handleException(final Exception exception) {
-		log.error("Unhandled exception has occured: %s", exception.getMessage());
+		log.error("Unhandled exception has occured: {}", exception.getMessage());
 		final AccountServiceApiError apiError = new AccountServiceApiError(HttpStatus.BAD_REQUEST, exception.getMessage());
 		return new ResponseEntity<Object>(apiError, new HttpHeaders(), apiError.getStatus());
 	}

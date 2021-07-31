@@ -36,20 +36,20 @@ public class AccountController {
 
 	@PostMapping
 	public ResponseEntity<AccountDetails> addAccountDetails(@RequestBody final AccountDetails accountDetails) {
-		log.info("Adding new account: %s", accountDetails);
+		log.info("Adding new account: {}", accountDetails);
 		return new ResponseEntity<AccountDetails>(accountService.addAccountDetails(accountDetails), HttpStatus.CREATED);
 	}
 
 	@GetMapping("/checkBalance/accountId/{accountId}/pin/{pin}")
 	public ResponseEntity<AccountBalance> getAccountBalance(@PathVariable("accountId") final Long accountId,
 			@PathVariable("pin") final int pin) {
-		log.info("Getting account balance for account: %s", accountId);
+		log.info("Getting account balance for account: {}", accountId);
 		return new ResponseEntity<AccountBalance>(accountService.getAccountBalance(accountId, pin), HttpStatus.OK);
 	}
 
 	@PostMapping("/debit")
 	public ResponseEntity<AccountBalance> debitFromAccount(@RequestBody final AccountDebitInfo accountDebitInfo) {
-		log.info("Requesting account debit: %s", accountDebitInfo);
+		log.info("Requesting account debit: {}", accountDebitInfo);
 		return new ResponseEntity<AccountBalance>(accountService.debitFromAccount(accountDebitInfo), HttpStatus.OK);
 	}
 

@@ -41,12 +41,12 @@ public class ATMService {
 	}
 
 	public ATMCashDetails initializeAmountinATM(final ATMCashDetails atmCashDetails) {
-		log.info("Initializing ATM cash box: %s", atmCashDetails);
+		log.info("Initializing ATM cash box: {}", atmCashDetails);
 		return atmRepository.save(atmCashDetails);
 	}
 
 	public TransactionDetails withdrawAmount(final WithdrawalRequest withdrawalRequest) {
-		log.info("Withrawal request received: %s", withdrawalRequest);
+		log.info("Withrawal request received: {}", withdrawalRequest);
 		final ATMCashDetails atmCashDetails = atmRepository.getById(1L);
 		final TransactionDetails transactionDetails = new TransactionDetails();
 		final Integer amountLeftToBeDispensed = currencyDispenser.dispense(atmCashDetails, transactionDetails,
@@ -60,14 +60,14 @@ public class ATMService {
 	public AccountBalance getAccountBalance(long accountId, int pin) {
 		final AccountBalance accountBalance = restTemplate.getForObject(UrlConstants.ACCOUNT_SERVICE.value() + UrlConstants.CHECK_BALANCE.value()
 				+ accountId + UrlConstants.PIN.value() + pin, AccountBalance.class);
-		log.info("Account balance fetched from account service: %s", accountBalance);
+		log.info("Account balance fetched from account service: {}", accountBalance);
 		return accountBalance;
 	}
 
 	private AccountBalance debitAccountBalance(final WithdrawalRequest withdrawalRequest) {
 		final AccountBalance accountBalance = restTemplate.postForObject(UrlConstants.ACCOUNT_SERVICE.value() + UrlConstants.DEBIT.value(),
 				withdrawalRequest, AccountBalance.class);
-		log.info("Account debited. Current account balance: %s", accountBalance);
+		log.info("Account debited. Current account balance: {}", accountBalance);
 		return accountBalance;
 	}
 
@@ -77,7 +77,7 @@ public class ATMService {
 
 	private void validateAmountLeftToBeDispensed(final Integer amountLeftToBeDispensed) {
 		if (amountLeftToBeDispensed > 0) {
-			log.error("Not all amount can be dispensed. Amount in excess: %s", amountLeftToBeDispensed);
+			log.error("Not all amount can be dispensed. Amount in excess: {}", amountLeftToBeDispensed);
 			throw new ValidationFailedException(HttpStatus.UNPROCESSABLE_ENTITY,
 					Message.INSUFFICIENT_ATM_CASH.message());
 		}

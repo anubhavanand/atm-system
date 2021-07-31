@@ -20,7 +20,7 @@ public class InvalidWithdrwalAmountValidator implements Validator<WithdrawalRequ
 	@Override
 	public boolean isValid(final WithdrawalRequest withdrawalRequest) {
 		if (withdrawalRequest.getAmount() % CurrencyValue.FIVE.value() != 0) {
-			log.info("Validation failed: %s, WithdrawalRequest: %s",
+			log.info("Validation failed: {}, WithdrawalRequest: {}",
 					InvalidWithdrwalAmountValidator.class.getSimpleName(), withdrawalRequest);
 			throw new ValidationFailedException(HttpStatus.BAD_REQUEST,
 					Message.INVALID_AMOUNT.message() + CurrencyValue.FIVE.value());

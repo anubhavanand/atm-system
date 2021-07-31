@@ -41,7 +41,7 @@ public class AccountService {
 
 	public AccountBalance debitFromAccount(final AccountDebitInfo accountDebitInfo) {
 		final AccountDetails accountDetails = accountRepository.getById(accountDebitInfo.getAccountId());
-		log.info("Account details fecthed from db: %s", accountDetails);
+		log.info("Account details fecthed from db: {}", accountDetails);
 		validatePin(accountDebitInfo.getPin(), accountDetails.getPin());
 		if (accountDetails.getOpeningBalance() >= accountDebitInfo.getDebitAmount()) {
 			accountDetails.setOpeningBalance(accountDetails.getOpeningBalance() - accountDebitInfo.getDebitAmount());
@@ -56,7 +56,7 @@ public class AccountService {
 	
 	private void validatePin(final int receivedPin, final int actualPin) {
 		if (receivedPin != actualPin) {
-			log.error("Incorrect pin supplied: %s", receivedPin);
+			log.error("Incorrect pin supplied: {}", receivedPin);
 			throw new ValidationFailedException(HttpStatus.UNAUTHORIZED, Message.INCORRECT_PIN.message());
 		}
 	}
