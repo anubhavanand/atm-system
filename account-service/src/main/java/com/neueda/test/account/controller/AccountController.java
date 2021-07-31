@@ -37,7 +37,7 @@ public class AccountController {
 	@PostMapping
 	public ResponseEntity<AccountDetails> addAccountDetails(@RequestBody final AccountDetails accountDetails) {
 		log.info("Adding new account: %s", accountDetails);
-		return new ResponseEntity<AccountDetails>(accountService.addAccountDetails(accountDetails), HttpStatus.OK);
+		return new ResponseEntity<AccountDetails>(accountService.addAccountDetails(accountDetails), HttpStatus.CREATED);
 	}
 
 	@GetMapping("/checkBalance/accountId/{accountId}/pin/{pin}")

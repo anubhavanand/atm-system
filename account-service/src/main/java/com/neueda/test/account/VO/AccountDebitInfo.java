@@ -21,6 +21,6 @@ public class AccountDebitInfo {
 	@ToString.Exclude
 	private int pin;
 	
-	private int debitAmount;
+	private double debitAmount;
 
 }
