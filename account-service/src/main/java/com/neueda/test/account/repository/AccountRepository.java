@@ -5,6 +5,11 @@ import org.springframework.stereotype.Repository;
 
 import com.neueda.test.account.entity.AccountDetails;
 
+/**
+ * 
+ * @author Anubhav.Anand
+ *
+ */
 @Repository
 public interface AccountRepository extends JpaRepository<AccountDetails, Long> {
 

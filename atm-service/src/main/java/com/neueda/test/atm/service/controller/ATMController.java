@@ -23,7 +23,7 @@ import com.neueda.test.atm.validation.service.ValidationService;
  *
  */
 @RestController
-@RequestMapping("/atm/")
+@RequestMapping("/atm")
 public class ATMController {
 
 	private final ATMService atmService;

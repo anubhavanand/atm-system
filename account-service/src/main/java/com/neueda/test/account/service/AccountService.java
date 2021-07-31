@@ -2,13 +2,13 @@ package com.neueda.test.account.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.neueda.test.account.VO.AccountBalance;
-import com.neueda.test.account.controller.errorHandler.ValidationFailedException;
+import com.neueda.test.account.controller.exceptionHandler.ValidationFailedException;
 import com.neueda.test.account.entity.AccountDetails;
 import com.neueda.test.account.repository.AccountRepository;
+import com.neueda.test.account.util.Message;
 
 /**
  * 
@@ -29,18 +29,18 @@ public class AccountService {
 		return accountRepository.save(accountDetails);
 	}
 
-	public ResponseEntity<Object> getAccountBalance(final Long accountId, final int pin) {
+	public AccountBalance getAccountBalance(final Long accountId, final int pin) {
 		final AccountDetails accountDetails = accountRepository.getById(accountId);
 		if (pin != accountDetails.getPin()) {
-			throw new ValidationFailedException(HttpStatus.UNAUTHORIZED, "Incorrect Pin");
+			throw new ValidationFailedException(HttpStatus.UNAUTHORIZED, Message.INCORRECT_PIN.message());
 		}
-		return new ResponseEntity<Object>(getAccountBalance(accountDetails), HttpStatus.OK);
+		return getAccountBalance(accountDetails);
 	}
 
-	public ResponseEntity<Object> debitFromAccount(final Long accountId, final int pin, final int amountWithdrawn) {
+	public AccountBalance debitFromAccount(final Long accountId, final int pin, final int amountWithdrawn) {
 		final AccountDetails accountDetails = accountRepository.getById(accountId);
 		if (pin != accountDetails.getPin()) {
-			throw new ValidationFailedException(HttpStatus.UNAUTHORIZED, "Incorrect Pin");
+			throw new ValidationFailedException(HttpStatus.UNAUTHORIZED, Message.INCORRECT_PIN.message());
 		}
 		if (accountDetails.getOpeningBalance() >= amountWithdrawn) {
 			accountDetails.setOpeningBalance(accountDetails.getOpeningBalance() - amountWithdrawn);
@@ -50,7 +50,7 @@ public class AccountService {
 			accountDetails.setOpeningBalance(0);
 		}
 		accountRepository.save(accountDetails);
-		return new ResponseEntity<Object>(getAccountBalance(accountDetails), HttpStatus.OK);
+		return getAccountBalance(accountDetails);
 	}
 
 	private AccountBalance getAccountBalance(final AccountDetails accountDetails) {

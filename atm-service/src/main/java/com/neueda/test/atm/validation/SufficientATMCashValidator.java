@@ -7,6 +7,7 @@ import com.neueda.test.atm.entity.ATMCashDetails;
 import com.neueda.test.atm.model.WithdrawalRequest;
 import com.neueda.test.atm.service.entity.repository.ATMRepository;
 import com.neueda.test.atm.utils.AmountBuilder;
+import com.neueda.test.atm.utils.Message;
 
 /**
  * 
@@ -25,7 +26,7 @@ public class SufficientATMCashValidator implements Validator<WithdrawalRequest>{
 	public boolean isValid(final WithdrawalRequest entity) {
 		final ATMCashDetails atmDetails = atmRepository.getById(1L);
 		if(entity.getAmount() > getAvailableAmountInATM(atmDetails)) {
-			throw new ValidationFailedException(HttpStatus.UNPROCESSABLE_ENTITY, "Insufficient Cash.");
+			throw new ValidationFailedException(HttpStatus.UNPROCESSABLE_ENTITY, Message.INSUFFICIENT_ATM_CASH.message());
 		}
 		return true;
 	}

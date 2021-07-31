@@ -6,7 +6,14 @@ import org.springframework.web.client.RestTemplate;
 import com.neueda.test.atm.VO.AccountBalance;
 import com.neueda.test.atm.controller.errorHandler.ValidationFailedException;
 import com.neueda.test.atm.model.WithdrawalRequest;
+import com.neueda.test.atm.utils.Message;
+import com.neueda.test.atm.utils.UrlConstants;
 
+/**
+ * 
+ * @author Anubhav.Anand
+ *
+ */
 public class SufficientAccountBalanceValidator implements Validator<WithdrawalRequest> {
 
 	private final RestTemplate restTemplate;
@@ -17,11 +24,11 @@ public class SufficientAccountBalanceValidator implements Validator<WithdrawalRe
 
 	@Override
 	public boolean isValid(final WithdrawalRequest request) {
-		final AccountBalance accountBalance = restTemplate.getForObject(
-				"http://localhost:9001/accounts/id/" + request.getAccountId() + "/pin/" + request.getPin(),
-				AccountBalance.class);
-		if(accountBalance.getMaxWithdrawalAmount() < request.getAmount()) {
-			throw new ValidationFailedException(HttpStatus.NOT_ACCEPTABLE, "Account Balance Insufficient.");
+		final AccountBalance accountBalance = restTemplate.getForObject(UrlConstants.ACCOUNT_SERVICE.value()
+				+ request.getAccountId() + UrlConstants.PIN.value() + request.getPin(), AccountBalance.class);
+		if (accountBalance.getMaxWithdrawalAmount() < request.getAmount()) {
+			throw new ValidationFailedException(HttpStatus.NOT_ACCEPTABLE,
+					Message.INSUFFICIENT_ACCOUNT_BALANCE.message());
 		}
 		return true;
 	}

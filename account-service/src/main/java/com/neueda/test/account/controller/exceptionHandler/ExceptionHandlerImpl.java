@@ -1,4 +1,4 @@
-package com.neueda.test.account.controller.errorHandler;
+package com.neueda.test.account.controller.exceptionHandler;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;

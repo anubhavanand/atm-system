@@ -15,7 +15,7 @@ public class FiveCurrencyDispenser implements CurrencyDispenser {
 
 	@Override
 	public Integer dispense(final ATMCashDetails atmDetails, final TransactionDetails transactionDetails, Integer amount) {
-		if (amount >= 5) {
+		if (amount >= CurrencyValue.FIVE.value()) {
 			final int numberToBeWithdrawn = amount / CurrencyValue.FIVE.value();
 			if(atmDetails.getNoOfFiveCurrency() >= numberToBeWithdrawn) {
 				amount = amount % CurrencyValue.FIVE.value();

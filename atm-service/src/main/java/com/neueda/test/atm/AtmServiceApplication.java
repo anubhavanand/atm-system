@@ -2,6 +2,8 @@ package com.neueda.test.atm;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.client.loadbalancer.LoadBalanced;
+import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.web.client.RestTemplate;
 
@@ -12,6 +14,7 @@ import com.neueda.test.atm.dispenser.TenCurrencyDispenser;
 import com.neueda.test.atm.dispenser.TwentyCurrencyDispenser;
 
 @SpringBootApplication
+@EnableEurekaClient
 public class AtmServiceApplication {
 
 	public static void main(String[] args) {
@@ -19,6 +22,7 @@ public class AtmServiceApplication {
 	}
 	
 	@Bean
+	@LoadBalanced
 	public RestTemplate restTemplate() {
 		return new RestTemplate();
 	}

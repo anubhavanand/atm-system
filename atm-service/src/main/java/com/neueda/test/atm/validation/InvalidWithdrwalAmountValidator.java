@@ -4,16 +4,23 @@ import org.springframework.http.HttpStatus;
 
 import com.neueda.test.atm.controller.errorHandler.ValidationFailedException;
 import com.neueda.test.atm.model.WithdrawalRequest;
+import com.neueda.test.atm.utils.CurrencyValue;
+import com.neueda.test.atm.utils.Message;
 
+/**
+ * 
+ * @author Anubhav.Anand
+ *
+ */
 public class InvalidWithdrwalAmountValidator implements Validator<WithdrawalRequest> {
 
 	@Override
 	public boolean isValid(final WithdrawalRequest entity) {
-		//ToDO
-		if (entity.getAmount() % 5 != 0) {
-			throw new ValidationFailedException(HttpStatus.BAD_REQUEST, "Invalid amount! Amount should be in multiple of 5");
-		} 
-		
+		if (entity.getAmount() % CurrencyValue.FIVE.value() != 0) {
+			throw new ValidationFailedException(HttpStatus.BAD_REQUEST,
+					Message.INVALID_AMOUNT.message() + CurrencyValue.FIVE.value());
+		}
+
 		return true;
 	}
 }
