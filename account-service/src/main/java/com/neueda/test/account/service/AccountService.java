@@ -11,12 +11,15 @@ import com.neueda.test.account.entity.AccountDetails;
 import com.neueda.test.account.repository.AccountRepository;
 import com.neueda.test.account.util.Message;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * 
  * @author Anubhav.Anand
  *
  */
 @Service
+@Slf4j
 public class AccountService {
 
 	private final AccountRepository accountRepository;
@@ -32,17 +35,14 @@ public class AccountService {
 
 	public AccountBalance getAccountBalance(final Long accountId, final int pin) {
 		final AccountDetails accountDetails = accountRepository.getById(accountId);
-		if (pin != accountDetails.getPin()) {
-			throw new ValidationFailedException(HttpStatus.UNAUTHORIZED, Message.INCORRECT_PIN.message());
-		}
+		validatePin(pin, accountDetails.getPin());
 		return getAccountBalance(accountDetails);
 	}
 
 	public AccountBalance debitFromAccount(final AccountDebitInfo accountDebitInfo) {
 		final AccountDetails accountDetails = accountRepository.getById(accountDebitInfo.getAccountId());
-		if (accountDebitInfo.getPin() != accountDetails.getPin()) {
-			throw new ValidationFailedException(HttpStatus.UNAUTHORIZED, Message.INCORRECT_PIN.message());
-		}
+		log.info("Account details fecthed from db: %s", accountDetails);
+		validatePin(accountDebitInfo.getPin(), accountDetails.getPin());
 		if (accountDetails.getOpeningBalance() >= accountDebitInfo.getDebitAmount()) {
 			accountDetails.setOpeningBalance(accountDetails.getOpeningBalance() - accountDebitInfo.getDebitAmount());
 		} else {
@@ -52,6 +52,13 @@ public class AccountService {
 		}
 		accountRepository.save(accountDetails);
 		return getAccountBalance(accountDetails);
+	}
+	
+	private void validatePin(final int receivedPin, final int actualPin) {
+		if (receivedPin != actualPin) {
+			log.error("Incorrect pin supplied: %s", receivedPin);
+			throw new ValidationFailedException(HttpStatus.UNAUTHORIZED, Message.INCORRECT_PIN.message());
+		}
 	}
 
 	private AccountBalance getAccountBalance(final AccountDetails accountDetails) {

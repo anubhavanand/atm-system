@@ -9,11 +9,14 @@ import com.neueda.test.atm.service.entity.repository.ATMRepository;
 import com.neueda.test.atm.utils.AmountBuilder;
 import com.neueda.test.atm.utils.Message;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * 
  * @author Anubhav.Anand
  *
  */
+@Slf4j
 public class SufficientATMCashValidator implements Validator<WithdrawalRequest> {
 
 	private final ATMRepository atmRepository;
@@ -23,9 +26,11 @@ public class SufficientATMCashValidator implements Validator<WithdrawalRequest> 
 	}
 
 	@Override
-	public boolean isValid(final WithdrawalRequest entity) {
+	public boolean isValid(final WithdrawalRequest withdrawalRequest) {
 		final ATMCashDetails atmDetails = atmRepository.getById(1L);
-		if (entity.getAmount() > getAvailableAmountInATM(atmDetails)) {
+		if (withdrawalRequest.getAmount() > getAvailableAmountInATM(atmDetails)) {
+			log.info("Validation failed: %s, WithdrawalRequest: %s",
+					SufficientATMCashValidator.class.getSimpleName(), withdrawalRequest);
 			throw new ValidationFailedException(HttpStatus.BAD_REQUEST, Message.INSUFFICIENT_ATM_CASH.message());
 		}
 		return true;

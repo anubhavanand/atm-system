@@ -15,6 +15,8 @@ import com.neueda.test.account.VO.AccountDebitInfo;
 import com.neueda.test.account.entity.AccountDetails;
 import com.neueda.test.account.service.AccountService;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * 
  * @author Anubhav.Anand
@@ -22,6 +24,7 @@ import com.neueda.test.account.service.AccountService;
  */
 @RestController
 @RequestMapping("/accounts")
+@Slf4j
 public class AccountController {
 
 	private final AccountService accountService;
@@ -33,17 +36,20 @@ public class AccountController {
 
 	@PostMapping
 	public ResponseEntity<AccountDetails> addAccountDetails(@RequestBody final AccountDetails accountDetails) {
+		log.info("Adding new account: %s", accountDetails);
 		return new ResponseEntity<AccountDetails>(accountService.addAccountDetails(accountDetails), HttpStatus.OK);
 	}
 
-	@GetMapping("/checkBalance/id/{id}/pin/{pin}")
-	public ResponseEntity<AccountBalance> getAccountBalance(@PathVariable("id") final Long accountId,
+	@GetMapping("/checkBalance/accountId/{accountId}/pin/{pin}")
+	public ResponseEntity<AccountBalance> getAccountBalance(@PathVariable("accountId") final Long accountId,
 			@PathVariable("pin") final int pin) {
+		log.info("Getting account balance for account: %s", accountId);
 		return new ResponseEntity<AccountBalance>(accountService.getAccountBalance(accountId, pin), HttpStatus.OK);
 	}
 
 	@PostMapping("/debit")
 	public ResponseEntity<AccountBalance> debitFromAccount(@RequestBody final AccountDebitInfo accountDebitInfo) {
+		log.info("Requesting account debit: %s", accountDebitInfo);
 		return new ResponseEntity<AccountBalance>(accountService.debitFromAccount(accountDebitInfo), HttpStatus.OK);
 	}
 

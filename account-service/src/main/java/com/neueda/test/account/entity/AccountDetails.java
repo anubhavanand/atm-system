@@ -6,6 +6,7 @@ import javax.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 /**
  * 
@@ -16,11 +17,13 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
+@ToString
 public class AccountDetails {
 	
 	@Id
 	private long accountId;
 	
+	@ToString.Exclude
 	private int pin;
 	
 	private double openingBalance;

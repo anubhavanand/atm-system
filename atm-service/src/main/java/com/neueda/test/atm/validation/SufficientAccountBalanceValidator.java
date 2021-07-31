@@ -9,11 +9,14 @@ import com.neueda.test.atm.model.WithdrawalRequest;
 import com.neueda.test.atm.utils.Message;
 import com.neueda.test.atm.utils.UrlConstants;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * 
  * @author Anubhav.Anand
  *
  */
+@Slf4j
 public class SufficientAccountBalanceValidator implements Validator<WithdrawalRequest> {
 
 	private final RestTemplate restTemplate;
@@ -23,13 +26,15 @@ public class SufficientAccountBalanceValidator implements Validator<WithdrawalRe
 	}
 
 	@Override
-	public boolean isValid(final WithdrawalRequest request) {
+	public boolean isValid(final WithdrawalRequest withdrawalRequest) {
 		final AccountBalance accountBalance = restTemplate
 				.getForObject(
 						UrlConstants.ACCOUNT_SERVICE.value() + UrlConstants.CHECK_BALANCE.value()
-								+ request.getAccountId() + UrlConstants.PIN.value() + request.getPin(),
+								+ withdrawalRequest.getAccountId() + UrlConstants.PIN.value() + withdrawalRequest.getPin(),
 						AccountBalance.class);
-		if (accountBalance.getMaxWithdrawalAmount() < request.getAmount()) {
+		if (accountBalance.getMaxWithdrawalAmount() < withdrawalRequest.getAmount()) {
+			log.info("Validation failed: %s, WithdrawalRequest: %s, AccountBalance: %s",
+					SufficientAccountBalanceValidator.class.getSimpleName(), withdrawalRequest, accountBalance);
 			throw new ValidationFailedException(HttpStatus.BAD_REQUEST, Message.INSUFFICIENT_ACCOUNT_BALANCE.message());
 		}
 		return true;

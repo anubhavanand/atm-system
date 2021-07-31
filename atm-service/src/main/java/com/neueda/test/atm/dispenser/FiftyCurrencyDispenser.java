@@ -4,30 +4,36 @@ import com.neueda.test.atm.VO.TransactionDetails;
 import com.neueda.test.atm.entity.ATMCashDetails;
 import com.neueda.test.atm.utils.CurrencyValue;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * 
  * @author Anubhav.Anand
  *
  */
+@Slf4j
 public class FiftyCurrencyDispenser implements CurrencyDispenser {
 
 	private CurrencyDispenser nextDispenser;
 
 	@Override
-	public Integer dispense(final ATMCashDetails atmDetails, final TransactionDetails transactionDetails, Integer amount) {
+	public Integer dispense(final ATMCashDetails atmCashDetails, final TransactionDetails transactionDetails,
+			Integer amount) {
+		log.debug("Running Fify currency dispenser, ATMCashDetails: %s, TransactionDetails: %s, amount: ",
+				atmCashDetails, transactionDetails, amount);
 		if (amount >= CurrencyValue.FIFTY.value()) {
 			final int numberToBeWithdrawn = amount / CurrencyValue.FIFTY.value();
-			if(atmDetails.getNoOfFiftyCurrency() >= numberToBeWithdrawn) {
+			if (atmCashDetails.getNoOfFiftyCurrency() >= numberToBeWithdrawn) {
 				amount = amount % CurrencyValue.FIFTY.value();
-				atmDetails.setNoOfFiftyCurrency(atmDetails.getNoOfFiftyCurrency() - numberToBeWithdrawn);
+				atmCashDetails.setNoOfFiftyCurrency(atmCashDetails.getNoOfFiftyCurrency() - numberToBeWithdrawn);
 				transactionDetails.setNoOfFiftyCurrency(numberToBeWithdrawn);
 			}
 		}
-		
+
 		if (amount > 0 && nextDispenser != null) {
-			return nextDispenser.dispense(atmDetails, transactionDetails, amount);
+			return nextDispenser.dispense(atmCashDetails, transactionDetails, amount);
 		}
-		
+
 		return amount;
 	}
 

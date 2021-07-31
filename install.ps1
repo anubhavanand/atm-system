@@ -5,4 +5,4 @@ mvn clean -DskipTests install
 cd ../service-registry
 mvn clean -DskipTests install
 cd ..
-docker-compose up
+docker-compose up -d

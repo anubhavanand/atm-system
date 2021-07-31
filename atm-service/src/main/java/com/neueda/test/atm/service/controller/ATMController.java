@@ -17,6 +17,8 @@ import com.neueda.test.atm.model.WithdrawalRequest;
 import com.neueda.test.atm.service.ATMService;
 import com.neueda.test.atm.validation.service.ValidationService;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * 
  * @author Anubhav.Anand
@@ -24,6 +26,7 @@ import com.neueda.test.atm.validation.service.ValidationService;
  */
 @RestController
 @RequestMapping("/atm")
+@Slf4j
 public class ATMController {
 
 	private final ATMService atmService;
@@ -38,18 +41,21 @@ public class ATMController {
 
 	@PostMapping("/")
 	public ResponseEntity<ATMCashDetails> initializeAmountinATM(@RequestBody final ATMCashDetails atmCashDetails) {
+		log.info("Initializing currency in ATM cash box: %s", atmCashDetails);
 		return new ResponseEntity<ATMCashDetails>(atmService.initializeAmountinATM(atmCashDetails), HttpStatus.OK);
 	}
 
 	@PostMapping("/withdraw")
 	public ResponseEntity<TransactionDetails> withdrawAmount(@RequestBody final WithdrawalRequest withdrawalRequest) {
+		log.info("Withdrawal request received from user: %s", withdrawalRequest);
 		validatorService.validate(withdrawalRequest);
 		return new ResponseEntity<TransactionDetails>(atmService.withdrawAmount(withdrawalRequest), HttpStatus.OK);
 	}
 	
-	@GetMapping("/checkBalance/id/{id}/pin/{pin}")
-	public ResponseEntity<AccountBalance> getAccountBalance(@PathVariable("id") final long accountId,
+	@GetMapping("/checkBalance/accountId/{accountId}/pin/{pin}")
+	public ResponseEntity<AccountBalance> getAccountBalance(@PathVariable("accountId") final long accountId,
 			@PathVariable("pin") final int pin) {
+		log.info("Fetch account balance request received, accountId: %s", accountId);
 		return new ResponseEntity<AccountBalance>(atmService.getAccountBalance(accountId, pin), HttpStatus.OK);
 	}
 

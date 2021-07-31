@@ -15,12 +15,15 @@ import com.neueda.test.atm.service.entity.repository.ATMRepository;
 import com.neueda.test.atm.utils.Message;
 import com.neueda.test.atm.utils.UrlConstants;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * 
  * @author Anubhav.Anand
  *
  */
 @Service
+@Slf4j
 public class ATMService {
 
 	private final ATMRepository atmRepository;
@@ -37,35 +40,47 @@ public class ATMService {
 		this.currencyDispenser = currencyDispenser;
 	}
 
-	public ATMCashDetails initializeAmountinATM(ATMCashDetails atmDetails) {
-		return atmRepository.save(atmDetails);
+	public ATMCashDetails initializeAmountinATM(final ATMCashDetails atmCashDetails) {
+		log.info("Initializing ATM cash box: %s", atmCashDetails);
+		return atmRepository.save(atmCashDetails);
 	}
 
 	public TransactionDetails withdrawAmount(final WithdrawalRequest withdrawalRequest) {
-		final ATMCashDetails atmDetails = atmRepository.getById(1L);
+		log.info("Withrawal request received: %s", withdrawalRequest);
+		final ATMCashDetails atmCashDetails = atmRepository.getById(1L);
 		final TransactionDetails transactionDetails = new TransactionDetails();
-		final Integer amountLeft = currencyDispenser.dispense(atmDetails, transactionDetails, withdrawalRequest.getAmount());
-		if (amountLeft > 0) {
-			throw new ValidationFailedException(HttpStatus.UNPROCESSABLE_ENTITY,
-					Message.INSUFFICIENT_ATM_CASH.message());
-		}
+		final Integer amountLeftToBeDispensed = currencyDispenser.dispense(atmCashDetails, transactionDetails,
+				withdrawalRequest.getAmount());
+		validateAmountLeftToBeDispensed(amountLeftToBeDispensed);
 		transactionDetails.setAccountBalance(debitAccountBalance(withdrawalRequest));
-		updateATMRepo(atmDetails);
+		updateATMRepo(atmCashDetails);
 		return transactionDetails;
 	}
 
 	public AccountBalance getAccountBalance(long accountId, int pin) {
-		return restTemplate.getForObject(
-				UrlConstants.ACCOUNT_SERVICE.value() + UrlConstants.CHECK_BALANCE.value() + accountId + UrlConstants.PIN.value() + pin,
-				AccountBalance.class);
+		final AccountBalance accountBalance = restTemplate.getForObject(UrlConstants.ACCOUNT_SERVICE.value() + UrlConstants.CHECK_BALANCE.value()
+				+ accountId + UrlConstants.PIN.value() + pin, AccountBalance.class);
+		log.info("Account balance fetched from account service: %s", accountBalance);
+		return accountBalance;
 	}
 
 	private AccountBalance debitAccountBalance(final WithdrawalRequest withdrawalRequest) {
-		return restTemplate.postForObject(UrlConstants.ACCOUNT_SERVICE.value() + UrlConstants.DEBIT.value(), withdrawalRequest, AccountBalance.class);
+		final AccountBalance accountBalance = restTemplate.postForObject(UrlConstants.ACCOUNT_SERVICE.value() + UrlConstants.DEBIT.value(),
+				withdrawalRequest, AccountBalance.class);
+		log.info("Account debited. Current account balance: %s", accountBalance);
+		return accountBalance;
 	}
 
 	private void updateATMRepo(final ATMCashDetails atmDetails) {
 		atmRepository.save(atmDetails);
+	}
+
+	private void validateAmountLeftToBeDispensed(final Integer amountLeftToBeDispensed) {
+		if (amountLeftToBeDispensed > 0) {
+			log.error("Not all amount can be dispensed. Amount in excess: %s", amountLeftToBeDispensed);
+			throw new ValidationFailedException(HttpStatus.UNPROCESSABLE_ENTITY,
+					Message.INSUFFICIENT_ATM_CASH.message());
+		}
 	}
 
 }

@@ -11,7 +11,7 @@ public enum UrlConstants {
 	
 	DEBIT("debit"),
 	
-	CHECK_BALANCE("checkBalance/id/"),
+	CHECK_BALANCE("checkBalance/accountId/"),
 	
 	PIN("/pin/"),
 
