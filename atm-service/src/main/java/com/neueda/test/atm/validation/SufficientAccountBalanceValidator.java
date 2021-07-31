@@ -24,11 +24,13 @@ public class SufficientAccountBalanceValidator implements Validator<WithdrawalRe
 
 	@Override
 	public boolean isValid(final WithdrawalRequest request) {
-		final AccountBalance accountBalance = restTemplate.getForObject(UrlConstants.ACCOUNT_SERVICE.value()
-				+ request.getAccountId() + UrlConstants.PIN.value() + request.getPin(), AccountBalance.class);
+		final AccountBalance accountBalance = restTemplate
+				.getForObject(
+						UrlConstants.ACCOUNT_SERVICE.value() + UrlConstants.CHECK_BALANCE.value()
+								+ request.getAccountId() + UrlConstants.PIN.value() + request.getPin(),
+						AccountBalance.class);
 		if (accountBalance.getMaxWithdrawalAmount() < request.getAmount()) {
-			throw new ValidationFailedException(HttpStatus.NOT_ACCEPTABLE,
-					Message.INSUFFICIENT_ACCOUNT_BALANCE.message());
+			throw new ValidationFailedException(HttpStatus.BAD_REQUEST, Message.INSUFFICIENT_ACCOUNT_BALANCE.message());
 		}
 		return true;
 	}

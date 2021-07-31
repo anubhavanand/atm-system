@@ -14,23 +14,23 @@ import com.neueda.test.atm.utils.Message;
  * @author Anubhav.Anand
  *
  */
-public class SufficientATMCashValidator implements Validator<WithdrawalRequest>{
-	
+public class SufficientATMCashValidator implements Validator<WithdrawalRequest> {
+
 	private final ATMRepository atmRepository;
 
 	public SufficientATMCashValidator(final ATMRepository atmRepository) {
 		this.atmRepository = atmRepository;
 	}
-	
+
 	@Override
 	public boolean isValid(final WithdrawalRequest entity) {
 		final ATMCashDetails atmDetails = atmRepository.getById(1L);
-		if(entity.getAmount() > getAvailableAmountInATM(atmDetails)) {
-			throw new ValidationFailedException(HttpStatus.UNPROCESSABLE_ENTITY, Message.INSUFFICIENT_ATM_CASH.message());
+		if (entity.getAmount() > getAvailableAmountInATM(atmDetails)) {
+			throw new ValidationFailedException(HttpStatus.BAD_REQUEST, Message.INSUFFICIENT_ATM_CASH.message());
 		}
 		return true;
 	}
-	
+
 	private Integer getAvailableAmountInATM(final ATMCashDetails atmDetails) {
 		return new AmountBuilder().setNoOfFiftyCurrency(atmDetails.getNoOfFiftyCurrency())
 				.setNoOfTwentyCurrency(atmDetails.getNoOfTwentyCurrency())

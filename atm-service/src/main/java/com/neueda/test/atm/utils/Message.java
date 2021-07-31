@@ -11,7 +11,7 @@ public enum Message {
 
 	INVALID_AMOUNT("Invalid amount. Amount should be multiple of "),
 
-	INSUFFICIENT_ACCOUNT_BALANCE("Insufficient Account Balance");
+	INSUFFICIENT_ACCOUNT_BALANCE("Insufficient balance in account");
 
 	private final String message;
 

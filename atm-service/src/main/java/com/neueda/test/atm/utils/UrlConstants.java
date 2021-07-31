@@ -7,7 +7,11 @@ package com.neueda.test.atm.utils;
  */
 public enum UrlConstants {
 	
-	ACCOUNT_SERVICE("http://ACCOUNT-SERVICE/accounts/id/"),
+	ACCOUNT_SERVICE("http://ACCOUNT-SERVICE/accounts/"),
+	
+	DEBIT("debit"),
+	
+	CHECK_BALANCE("checkBalance/id/"),
 	
 	PIN("/pin/"),
 

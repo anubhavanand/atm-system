@@ -41,14 +41,13 @@ public class ATMController {
 		return new ResponseEntity<ATMCashDetails>(atmService.initializeAmountinATM(atmCashDetails), HttpStatus.OK);
 	}
 
-	@GetMapping("/id/{id}/pin/{pin}/amount/{amount}")
-	public ResponseEntity<TransactionDetails> withdrawAmount(@PathVariable("id") final long accountId,
-			@PathVariable("pin") final int pin, @PathVariable("amount") final int amount) {
-		validatorService.validate(new WithdrawalRequest(accountId, pin, amount));
-		return new ResponseEntity<TransactionDetails>(atmService.withdrawAmount(accountId, pin, amount), HttpStatus.OK);
+	@PostMapping("/withdraw")
+	public ResponseEntity<TransactionDetails> withdrawAmount(@RequestBody final WithdrawalRequest withdrawalRequest) {
+		validatorService.validate(withdrawalRequest);
+		return new ResponseEntity<TransactionDetails>(atmService.withdrawAmount(withdrawalRequest), HttpStatus.OK);
 	}
 	
-	@GetMapping("/id/{id}/pin/{pin}")
+	@GetMapping("/checkBalance/id/{id}/pin/{pin}")
 	public ResponseEntity<AccountBalance> getAccountBalance(@PathVariable("id") final long accountId,
 			@PathVariable("pin") final int pin) {
 		return new ResponseEntity<AccountBalance>(atmService.getAccountBalance(accountId, pin), HttpStatus.OK);

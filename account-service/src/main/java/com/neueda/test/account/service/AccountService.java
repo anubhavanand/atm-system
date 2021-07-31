@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import com.neueda.test.account.VO.AccountBalance;
+import com.neueda.test.account.VO.AccountDebitInfo;
 import com.neueda.test.account.controller.exceptionHandler.ValidationFailedException;
 import com.neueda.test.account.entity.AccountDetails;
 import com.neueda.test.account.repository.AccountRepository;
@@ -37,16 +38,16 @@ public class AccountService {
 		return getAccountBalance(accountDetails);
 	}
 
-	public AccountBalance debitFromAccount(final Long accountId, final int pin, final int amountWithdrawn) {
-		final AccountDetails accountDetails = accountRepository.getById(accountId);
-		if (pin != accountDetails.getPin()) {
+	public AccountBalance debitFromAccount(final AccountDebitInfo accountDebitInfo) {
+		final AccountDetails accountDetails = accountRepository.getById(accountDebitInfo.getAccountId());
+		if (accountDebitInfo.getPin() != accountDetails.getPin()) {
 			throw new ValidationFailedException(HttpStatus.UNAUTHORIZED, Message.INCORRECT_PIN.message());
 		}
-		if (accountDetails.getOpeningBalance() >= amountWithdrawn) {
-			accountDetails.setOpeningBalance(accountDetails.getOpeningBalance() - amountWithdrawn);
+		if (accountDetails.getOpeningBalance() >= accountDebitInfo.getDebitAmount()) {
+			accountDetails.setOpeningBalance(accountDetails.getOpeningBalance() - accountDebitInfo.getDebitAmount());
 		} else {
-			accountDetails.setOverDraft(
-					accountDetails.getOverDraft() - (amountWithdrawn - accountDetails.getOpeningBalance()));
+			accountDetails.setOverDraft(accountDetails.getOverDraft()
+					- (accountDebitInfo.getDebitAmount() - accountDetails.getOpeningBalance()));
 			accountDetails.setOpeningBalance(0);
 		}
 		accountRepository.save(accountDetails);

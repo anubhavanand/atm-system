@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.neueda.test.account.VO.AccountBalance;
+import com.neueda.test.account.VO.AccountDebitInfo;
 import com.neueda.test.account.entity.AccountDetails;
 import com.neueda.test.account.service.AccountService;
 
@@ -35,16 +36,15 @@ public class AccountController {
 		return new ResponseEntity<AccountDetails>(accountService.addAccountDetails(accountDetails), HttpStatus.OK);
 	}
 
-	@GetMapping("/id/{id}/pin/{pin}")
+	@GetMapping("/checkBalance/id/{id}/pin/{pin}")
 	public ResponseEntity<AccountBalance> getAccountBalance(@PathVariable("id") final Long accountId,
 			@PathVariable("pin") final int pin) {
 		return new ResponseEntity<AccountBalance>(accountService.getAccountBalance(accountId, pin), HttpStatus.OK);
 	}
 
-	@GetMapping("/id/{id}/pin/{pin}/amount/{amount}")
-	public ResponseEntity<AccountBalance> debitFromAccount(@PathVariable("id") final Long accountId,
-			@PathVariable("pin") final int pin, @PathVariable("amount") final int amount) {
-		return new ResponseEntity<AccountBalance>(accountService.debitFromAccount(accountId, pin, amount), HttpStatus.OK);
+	@PostMapping("/debit")
+	public ResponseEntity<AccountBalance> debitFromAccount(@RequestBody final AccountDebitInfo accountDebitInfo) {
+		return new ResponseEntity<AccountBalance>(accountService.debitFromAccount(accountDebitInfo), HttpStatus.OK);
 	}
 
 }
