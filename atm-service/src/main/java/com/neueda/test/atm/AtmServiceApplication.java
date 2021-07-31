@@ -13,8 +13,11 @@ import com.neueda.test.atm.dispenser.FiveCurrencyDispenser;
 import com.neueda.test.atm.dispenser.TenCurrencyDispenser;
 import com.neueda.test.atm.dispenser.TwentyCurrencyDispenser;
 
+import springfox.documentation.swagger2.annotations.EnableSwagger2;
+
 @SpringBootApplication
 @EnableEurekaClient
+@EnableSwagger2
 public class AtmServiceApplication {
 
 	public static void main(String[] args) {

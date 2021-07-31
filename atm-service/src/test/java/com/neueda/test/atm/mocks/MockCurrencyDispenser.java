@@ -12,9 +12,7 @@ import com.neueda.test.atm.entity.ATMCashDetails;
 public class MockCurrencyDispenser implements CurrencyDispenser {
 
 	@Override
-	public Integer dispense(ATMCashDetails atmDetails, TransactionDetails transactionDetails, Integer amount) {
-		atmDetails.setNoOfTwentyCurrency(9);
-		transactionDetails.setNoOfTwentyCurrency(1);
+	public Integer dispense(final ATMCashDetails atmDetails, final TransactionDetails transactionDetails, final Integer amount) {
 		return 0;
 	}
 

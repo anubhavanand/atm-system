@@ -39,10 +39,10 @@ public class ATMController {
 		this.validatorService = validatorService;
 	}
 
-	@PostMapping("/")
+	@PostMapping
 	public ResponseEntity<ATMCashDetails> initializeAmountinATM(@RequestBody final ATMCashDetails atmCashDetails) {
 		log.info("Initializing currency in ATM cash box: %s", atmCashDetails);
-		return new ResponseEntity<ATMCashDetails>(atmService.initializeAmountinATM(atmCashDetails), HttpStatus.OK);
+		return new ResponseEntity<ATMCashDetails>(atmService.initializeAmountinATM(atmCashDetails), HttpStatus.CREATED);
 	}
 
 	@PostMapping("/withdraw")

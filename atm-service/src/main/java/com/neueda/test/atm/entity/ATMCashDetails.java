@@ -3,10 +3,12 @@ package com.neueda.test.atm.entity;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import lombok.ToString.Exclude;
 
 /**
  * 
@@ -21,7 +23,8 @@ import lombok.ToString;
 public final class ATMCashDetails {
 	
 	@Id
-	public final Long ID = 1L;
+	@ApiModelProperty(required = false, hidden = true)
+	public final Long id = 1L;
 
 	private Integer noOfFiveCurrency;
 	
