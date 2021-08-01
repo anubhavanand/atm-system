@@ -1,8 +1,8 @@
 cd account-service
-mvn clean -DskipTests install
+mvn clean install
 cd ../atm-service
-mvn clean -DskipTests install
+mvn clean install
 cd ../service-registry
-mvn clean -DskipTests install
+mvn clean install
 cd ..
 docker-compose up -d

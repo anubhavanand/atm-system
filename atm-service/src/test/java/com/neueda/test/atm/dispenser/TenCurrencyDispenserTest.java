@@ -4,10 +4,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 import com.neueda.test.atm.VO.TransactionDetails;
 import com.neueda.test.atm.entity.ATMCashDetails;
-import com.neueda.test.atm.mocks.MockCurrencyDispenser;
 /**
  * 
  * @author Anubhav.Anand
@@ -21,11 +21,14 @@ public class TenCurrencyDispenserTest {
 	
 	private TransactionDetails transactionDetails;
 	
+	private CurrencyDispenser nextDispenser;
+	
 	@BeforeEach
 	public void setUp() {
 		currencyDispenser = new TenCurrencyDispenser();
 		atmCashDetails = new ATMCashDetails(10, 10, 10, 10);
 		transactionDetails= new TransactionDetails();
+		nextDispenser = Mockito.mock(CurrencyDispenser.class);
 	}
 
 	@Test
@@ -44,7 +47,7 @@ public class TenCurrencyDispenserTest {
 	
 	@Test
 	public void verifyDenominationsWhenNextDispenserIsSet() {
-		currencyDispenser.setNextDispenser(new MockCurrencyDispenser());
+		currencyDispenser.setNextDispenser(nextDispenser);
 		currencyDispenser.dispense(atmCashDetails, transactionDetails, 25);
 		assertEquals(transactionDetails.getNoOfTenCurrency(), 2);
 		assertEquals(atmCashDetails.getNoOfTenCurrency(), 8);
@@ -52,7 +55,7 @@ public class TenCurrencyDispenserTest {
 	
 	@Test
 	public void verifyDenominationsWhenNextDispenserIsSetButAmountLeftIsZero() {
-		currencyDispenser.setNextDispenser(new MockCurrencyDispenser());
+		currencyDispenser.setNextDispenser(nextDispenser);
 		currencyDispenser.dispense(atmCashDetails, transactionDetails, 10);
 		assertEquals(transactionDetails.getNoOfTenCurrency(), 1);
 		assertEquals(atmCashDetails.getNoOfTenCurrency(), 9);

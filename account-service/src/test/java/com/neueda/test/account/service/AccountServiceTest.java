@@ -85,5 +85,16 @@ class AccountServiceTest {
 		
 	    assertEquals(accountBalance, new AccountBalance(0.0, 100.0, 100.0));
 	}
+	
+	@Test
+	public void testDebitFromAccountWhenOverdraftIsCompletelyUsed() {
+		final AccountDetails accountDetails = new AccountDetails(987654321, 4321, 1230.0, 150.0);
+		when(accountRepository.getById(ArgumentMatchers.any())).thenReturn(accountDetails);
+		
+		final AccountDebitInfo accountDebitInfo = new AccountDebitInfo(987654321, 4321, 1380.0);		
+		final AccountBalance accountBalance = accountService.debitFromAccount(accountDebitInfo);
+		
+	    assertEquals(accountBalance, new AccountBalance(0.0, 0.0, 0.0));
+	}
 
 }

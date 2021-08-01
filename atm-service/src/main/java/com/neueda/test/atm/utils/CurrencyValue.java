@@ -24,5 +24,9 @@ public enum CurrencyValue {
 	public Integer value() {
 		return currencyValue;
 	}
+	
+	public static CurrencyValue getMinimumDenomination() {
+		return FIVE;
+	}
 
 }
