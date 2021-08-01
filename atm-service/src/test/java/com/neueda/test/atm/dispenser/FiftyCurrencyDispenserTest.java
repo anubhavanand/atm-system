@@ -26,20 +26,29 @@ public class FiftyCurrencyDispenserTest {
 	@BeforeEach
 	public void setUp() {
 		currencyDispenser = new FiftyCurrencyDispenser();
-		atmCashDetails = new ATMCashDetails(10, 10, 10, 10);
 		transactionDetails= new TransactionDetails();
 		nextDispenser = Mockito.mock(CurrencyDispenser.class);
 	}
 
 	@Test
 	public void verifyNoOfFiftyDenominationDispensedWhenAmountWithdrawnIsGreaterThanFifty() {
+		atmCashDetails = new ATMCashDetails(10, 10, 10, 10);
 		currencyDispenser.dispense(atmCashDetails, transactionDetails, 70);
 		assertEquals(transactionDetails.getNoOfFiftyCurrency(), 1);
 		assertEquals(atmCashDetails.getNoOfFiftyCurrency(), 9);
 	}
 	
 	@Test
+	public void verifyNoOfFiftyDenominationDispensedWhenAmountWithdrawnIsGreaterThanFiftyAndNotesInATMIsLess() {
+		atmCashDetails = new ATMCashDetails(10, 10, 10, 1);
+		currencyDispenser.dispense(atmCashDetails, transactionDetails, 100);
+		assertEquals(transactionDetails.getNoOfFiftyCurrency(), 1);
+		assertEquals(atmCashDetails.getNoOfFiftyCurrency(), 0);
+	}
+	
+	@Test
 	public void verifyNoOfFiftyDenominationDispensedWhenAmountWithdrawnIsLessThanFifty() {
+		atmCashDetails = new ATMCashDetails(10, 10, 10, 10);
 		currencyDispenser.dispense(atmCashDetails, transactionDetails, 40);
 		assertEquals(transactionDetails.getNoOfFiftyCurrency(), 0);
 		assertEquals(atmCashDetails.getNoOfFiftyCurrency(), 10);
@@ -47,6 +56,7 @@ public class FiftyCurrencyDispenserTest {
 	
 	@Test
 	public void verifyDenominationsWhenNextDispenserIsSet() {
+		atmCashDetails = new ATMCashDetails(10, 10, 10, 10);
 		currencyDispenser.setNextDispenser(nextDispenser);
 		currencyDispenser.dispense(atmCashDetails, transactionDetails, 70);
 		assertEquals(transactionDetails.getNoOfFiftyCurrency(), 1);
@@ -55,6 +65,7 @@ public class FiftyCurrencyDispenserTest {
 	
 	@Test
 	public void verifyDenominationsWhenNextDispenserIsSetButAmountLeftIsZero() {
+		atmCashDetails = new ATMCashDetails(10, 10, 10, 10);
 		currencyDispenser.setNextDispenser(nextDispenser);
 		currencyDispenser.dispense(atmCashDetails, transactionDetails, 50);
 		assertEquals(transactionDetails.getNoOfFiftyCurrency(), 1);

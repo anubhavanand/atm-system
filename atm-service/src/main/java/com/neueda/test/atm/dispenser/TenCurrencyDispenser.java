@@ -20,12 +20,18 @@ public class TenCurrencyDispenser implements CurrencyDispenser {
 	public Integer dispense(final ATMCashDetails atmCashDetails, final TransactionDetails transactionDetails, Integer amount) {
 		log.debug("Running Ten currency dispenser, ATMCashDetails: {}, TransactionDetails: {}, amount: ",
 				atmCashDetails, transactionDetails, amount);
-		if (amount >= CurrencyValue.TEN.value()) {
+		
+		final int noOfTenCurrencyInATM = atmCashDetails.getNoOfTenCurrency();
+		if (amount >= CurrencyValue.TEN.value() && noOfTenCurrencyInATM >= 0) {
 			final int numberToBeWithdrawn = amount / CurrencyValue.TEN.value();
-			if(atmCashDetails.getNoOfTenCurrency() >= numberToBeWithdrawn) {
+			if (noOfTenCurrencyInATM >= numberToBeWithdrawn) {
 				amount = amount % CurrencyValue.TEN.value();
-				atmCashDetails.setNoOfTenCurrency(atmCashDetails.getNoOfTenCurrency() - numberToBeWithdrawn);
+				atmCashDetails.setNoOfTenCurrency(noOfTenCurrencyInATM - numberToBeWithdrawn);
 				transactionDetails.setNoOfTenCurrency(numberToBeWithdrawn);
+			} else {
+				amount = amount - noOfTenCurrencyInATM * CurrencyValue.TEN.value();
+				transactionDetails.setNoOfTenCurrency(noOfTenCurrencyInATM);
+				atmCashDetails.setNoOfTenCurrency(0);
 			}
 		}
 		

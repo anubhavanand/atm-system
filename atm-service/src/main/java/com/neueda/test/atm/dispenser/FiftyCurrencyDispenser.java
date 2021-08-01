@@ -21,12 +21,17 @@ public class FiftyCurrencyDispenser implements CurrencyDispenser {
 			Integer amount) {
 		log.debug("Running Fify currency dispenser, ATMCashDetails: {}, TransactionDetails: {}, amount: ",
 				atmCashDetails, transactionDetails, amount);
-		if (amount >= CurrencyValue.FIFTY.value()) {
+		final int noOfFiftyCurrencyInATM = atmCashDetails.getNoOfFiftyCurrency();
+		if (amount >= CurrencyValue.FIFTY.value() && noOfFiftyCurrencyInATM >= 0) {
 			final int numberToBeWithdrawn = amount / CurrencyValue.FIFTY.value();
-			if (atmCashDetails.getNoOfFiftyCurrency() >= numberToBeWithdrawn) {
+			if (noOfFiftyCurrencyInATM >= numberToBeWithdrawn) {
 				amount = amount % CurrencyValue.FIFTY.value();
-				atmCashDetails.setNoOfFiftyCurrency(atmCashDetails.getNoOfFiftyCurrency() - numberToBeWithdrawn);
+				atmCashDetails.setNoOfFiftyCurrency(noOfFiftyCurrencyInATM - numberToBeWithdrawn);
 				transactionDetails.setNoOfFiftyCurrency(numberToBeWithdrawn);
+			} else {
+				amount = amount - noOfFiftyCurrencyInATM * CurrencyValue.FIFTY.value();
+				transactionDetails.setNoOfFiftyCurrency(noOfFiftyCurrencyInATM);
+				atmCashDetails.setNoOfFiftyCurrency(0);
 			}
 		}
 

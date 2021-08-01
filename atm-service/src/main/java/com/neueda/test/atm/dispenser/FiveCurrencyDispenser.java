@@ -20,12 +20,18 @@ public class FiveCurrencyDispenser implements CurrencyDispenser {
 	public Integer dispense(final ATMCashDetails atmCashDetails, final TransactionDetails transactionDetails, Integer amount) {
 		log.debug("Running Five currency dispenser, ATMCashDetails: {}, TransactionDetails: {}, amount: ",
 				atmCashDetails, transactionDetails, amount);
-		if (amount >= CurrencyValue.FIVE.value()) {
+
+		final int noOfFiveCurrencyInATM = atmCashDetails.getNoOfFiveCurrency();
+		if (amount >= CurrencyValue.FIVE.value() && noOfFiveCurrencyInATM >= 0) {
 			final int numberToBeWithdrawn = amount / CurrencyValue.FIVE.value();
-			if(atmCashDetails.getNoOfFiveCurrency() >= numberToBeWithdrawn) {
+			if (noOfFiveCurrencyInATM >= numberToBeWithdrawn) {
 				amount = amount % CurrencyValue.FIVE.value();
-				atmCashDetails.setNoOfFiveCurrency(atmCashDetails.getNoOfFiveCurrency() - numberToBeWithdrawn);
+				atmCashDetails.setNoOfFiveCurrency(noOfFiveCurrencyInATM - numberToBeWithdrawn);
 				transactionDetails.setNoOfFiveCurrency(numberToBeWithdrawn);
+			} else {
+				amount = amount - noOfFiveCurrencyInATM * CurrencyValue.FIVE.value();
+				transactionDetails.setNoOfFiveCurrency(noOfFiveCurrencyInATM);
+				atmCashDetails.setNoOfFiveCurrency(0);
 			}
 		}
 		

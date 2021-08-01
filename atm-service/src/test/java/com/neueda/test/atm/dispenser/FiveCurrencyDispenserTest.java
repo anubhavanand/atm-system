@@ -39,6 +39,14 @@ public class FiveCurrencyDispenserTest {
 	}
 	
 	@Test
+	public void verifyNoOfFiveDenominationDispensedWhenAmountWithdrawnIsGreaterThanFiveAndNotesInATMIsLess() {
+		atmCashDetails = new ATMCashDetails(1, 10, 10, 1);
+		currencyDispenser.dispense(atmCashDetails, transactionDetails, 10);
+		assertEquals(transactionDetails.getNoOfFiveCurrency(), 1);
+		assertEquals(atmCashDetails.getNoOfFiveCurrency(), 0);
+	}
+	
+	@Test
 	public void verifyNoOfFiveDenominationDispensedWhenAmountWithdrawnIsLessThanFive() {
 		currencyDispenser.dispense(atmCashDetails, transactionDetails, 3);
 		assertEquals(transactionDetails.getNoOfFiveCurrency(), 0);

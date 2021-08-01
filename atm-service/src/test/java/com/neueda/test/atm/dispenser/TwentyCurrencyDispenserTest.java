@@ -39,6 +39,14 @@ public class TwentyCurrencyDispenserTest {
 	}
 	
 	@Test
+	public void verifyNoOfTwentyDenominationDispensedWhenAmountWithdrawnIsGreaterThanTwentyAndNotesInATMIsLess() {
+		atmCashDetails = new ATMCashDetails(10, 10, 1, 10);
+		currencyDispenser.dispense(atmCashDetails, transactionDetails, 40);
+		assertEquals(transactionDetails.getNoOfTwentyCurrency(), 1);
+		assertEquals(atmCashDetails.getNoOfTwentyCurrency(), 0);
+	}
+	
+	@Test
 	public void verifyNoOfTwentyDenominationDispensedWhenAmountWithdrawnIsLessThanTwenty() {
 		currencyDispenser.dispense(atmCashDetails, transactionDetails, 10);
 		assertEquals(transactionDetails.getNoOfTwentyCurrency(), 0);
