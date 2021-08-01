@@ -1,8 +1,8 @@
 cd account-service
-mvn clean install
+.\mvnw clean install
 cd ../atm-service
-mvn clean install
+.\mvnw clean install
 cd ../service-registry
-mvn clean install
+.\mvnw clean install
 cd ..
 docker-compose up -d
