@@ -74,7 +74,7 @@ public class ATMServiceTest {
 	@Test
 	public void testWithdrawAmountWhenNotAllAmountCanBeDispensed() {
 		final ATMCashDetails atmCashDetails = new ATMCashDetails(10, 5, 10, 5);
-		when(atmRepository.save(ArgumentMatchers.any())).thenReturn(atmCashDetails);
+		when(atmRepository.getById(ArgumentMatchers.any())).thenReturn(atmCashDetails);
 		when(currencyDispenser.dispense(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(2);
 
 		final WithdrawalRequest withdrawalRequest = new WithdrawalRequest();
@@ -88,7 +88,7 @@ public class ATMServiceTest {
 	@Test
 	public void testWithdrawAmountWhenAllAmountCanBeDispensed() {
 		final ATMCashDetails atmCashDetails = new ATMCashDetails(10, 5, 10, 5);
-		when(atmRepository.save(ArgumentMatchers.any())).thenReturn(atmCashDetails);
+		when(atmRepository.getById(ArgumentMatchers.any())).thenReturn(atmCashDetails);
 		when(currencyDispenser.dispense(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(0);
 
 		final AccountBalance accountBalance = new AccountBalance(100.0, 10.0, 110.0);
