@@ -43,11 +43,11 @@ public class AccountService {
 		final AccountDetails accountDetails = accountRepository.getById(accountDebitInfo.getAccountId());
 		log.info("Account details fecthed from db: {}", accountDetails);
 		validatePin(accountDebitInfo.getPin(), accountDetails.getPin());
-		if (accountDetails.getOpeningBalance() >= accountDebitInfo.getDebitAmount()) {
-			accountDetails.setOpeningBalance(accountDetails.getOpeningBalance() - accountDebitInfo.getDebitAmount());
+		if (accountDetails.getOpeningBalance() >= accountDebitInfo.getAmount()) {
+			accountDetails.setOpeningBalance(accountDetails.getOpeningBalance() - accountDebitInfo.getAmount());
 		} else {
 			accountDetails.setOverDraft(accountDetails.getOverDraft()
-					- (accountDebitInfo.getDebitAmount() - accountDetails.getOpeningBalance()));
+					- (accountDebitInfo.getAmount() - accountDetails.getOpeningBalance()));
 			accountDetails.setOpeningBalance(0);
 		}
 		accountRepository.save(accountDetails);
