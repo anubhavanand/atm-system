@@ -6,66 +6,77 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-import com.neueda.test.atm.VO.TransactionDetails;
+import com.neueda.test.atm.VO.DispensedCashDetails;
 import com.neueda.test.atm.entity.ATMCashDetails;
+import com.neueda.test.atm.model.DispenserResult;
+
 /**
  * 
  * @author Anubhav.Anand
  *
  */
 public class TwentyCurrencyDispenserTest {
-	
+
 	private TwentyCurrencyDispenser currencyDispenser;
-	
+
 	private ATMCashDetails atmCashDetails;
-	
-	private TransactionDetails transactionDetails;
-	
+
 	private CurrencyDispenser nextDispenser;
-	
+
+	private DispensedCashDetails dispensedCashDetails;
+
+	private DispenserResult dispenserResult;
+
 	@BeforeEach
 	public void setUp() {
 		currencyDispenser = new TwentyCurrencyDispenser();
 		atmCashDetails = new ATMCashDetails(10, 10, 10, 10);
-		transactionDetails= new TransactionDetails();
+		dispensedCashDetails = new DispensedCashDetails();
+		dispenserResult = new DispenserResult();
+		dispenserResult.setDispensedCashDetails(dispensedCashDetails);
 		nextDispenser = Mockito.mock(CurrencyDispenser.class);
 	}
 
 	@Test
 	public void verifyNoOfTwentyDenominationDispensedWhenAmountWithdrawnIsGreaterThanTwenty() {
-		currencyDispenser.dispense(atmCashDetails, transactionDetails, 70);
-		assertEquals(transactionDetails.getNoOfTwentyCurrency(), 3);
+		dispenserResult.setAmountLeftTobeDispensed(60);
+		currencyDispenser.dispense(atmCashDetails, dispenserResult);
+		assertEquals(dispenserResult.getDispensedCashDetails().getNoOfTwentyCurrency(), 3);
 		assertEquals(atmCashDetails.getNoOfTwentyCurrency(), 7);
 	}
-	
+
 	@Test
 	public void verifyNoOfTwentyDenominationDispensedWhenAmountWithdrawnIsGreaterThanTwentyAndNotesInATMIsLess() {
 		atmCashDetails = new ATMCashDetails(10, 10, 1, 10);
-		currencyDispenser.dispense(atmCashDetails, transactionDetails, 40);
-		assertEquals(transactionDetails.getNoOfTwentyCurrency(), 1);
+		dispenserResult.setAmountLeftTobeDispensed(40);
+		currencyDispenser.dispense(atmCashDetails, dispenserResult);
+		assertEquals(dispenserResult.getDispensedCashDetails().getNoOfTwentyCurrency(), 1);
 		assertEquals(atmCashDetails.getNoOfTwentyCurrency(), 0);
 	}
-	
+
 	@Test
 	public void verifyNoOfTwentyDenominationDispensedWhenAmountWithdrawnIsLessThanTwenty() {
-		currencyDispenser.dispense(atmCashDetails, transactionDetails, 10);
-		assertEquals(transactionDetails.getNoOfTwentyCurrency(), 0);
+		dispenserResult.setAmountLeftTobeDispensed(10);
+		currencyDispenser.dispense(atmCashDetails, dispenserResult);
+		assertEquals(dispenserResult.getDispensedCashDetails().getNoOfTwentyCurrency(), 0);
 		assertEquals(atmCashDetails.getNoOfTwentyCurrency(), 10);
 	}
-	
+
 	@Test
 	public void verifyDenominationsWhenNextDispenserIsSet() {
+		dispenserResult.setAmountLeftTobeDispensed(65);
 		currencyDispenser.setNextDispenser(nextDispenser);
-		currencyDispenser.dispense(atmCashDetails, transactionDetails, 70);
-		assertEquals(transactionDetails.getNoOfTwentyCurrency(), 3);
+		currencyDispenser.dispense(atmCashDetails, dispenserResult);
+		assertEquals(dispenserResult.getDispensedCashDetails().getNoOfTwentyCurrency(), 3);
 		assertEquals(atmCashDetails.getNoOfTwentyCurrency(), 7);
 	}
-	
+
 	@Test
 	public void verifyDenominationsWhenNextDispenserIsSetButAmountLeftIsZero() {
+		dispenserResult.setAmountLeftTobeDispensed(20);
 		currencyDispenser.setNextDispenser(nextDispenser);
-		currencyDispenser.dispense(atmCashDetails, transactionDetails, 20);
-		assertEquals(transactionDetails.getNoOfTwentyCurrency(), 1);
+		currencyDispenser.dispense(atmCashDetails, dispenserResult);
+		assertEquals(dispenserResult.getDispensedCashDetails().getNoOfTwentyCurrency(), 1);
 		assertEquals(atmCashDetails.getNoOfTwentyCurrency(), 9);
 	}
 

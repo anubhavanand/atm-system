@@ -6,10 +6,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import com.neueda.test.atm.VO.AccountBalance;
+import com.neueda.test.atm.VO.DispensedCashDetails;
 import com.neueda.test.atm.VO.TransactionDetails;
 import com.neueda.test.atm.controller.errorHandler.ValidationFailedException;
 import com.neueda.test.atm.dispenser.CurrencyDispenser;
 import com.neueda.test.atm.entity.ATMCashDetails;
+import com.neueda.test.atm.model.DispenserResult;
 import com.neueda.test.atm.model.WithdrawalRequest;
 import com.neueda.test.atm.service.entity.repository.ATMRepository;
 import com.neueda.test.atm.utils.Message;
@@ -49,9 +51,10 @@ public class ATMService {
 		log.info("Withrawal request received: {}", withdrawalRequest);
 		final ATMCashDetails atmCashDetails = atmRepository.getById(1L);
 		final TransactionDetails transactionDetails = new TransactionDetails();
-		final Integer amountLeftToBeDispensed = currencyDispenser.dispense(atmCashDetails, transactionDetails,
-				withdrawalRequest.getAmount());
-		validateAmountLeftToBeDispensed(amountLeftToBeDispensed);
+		final DispenserResult dispenserResult = currencyDispenser.dispense(atmCashDetails,
+				initializeDispenserResult(withdrawalRequest.getAmount()));
+		validateAmountLeftToBeDispensed(dispenserResult.getAmountLeftTobeDispensed());
+		transactionDetails.setDispensedCashDetails(dispenserResult.getDispensedCashDetails());
 		transactionDetails.setAccountBalance(debitAccountBalance(withdrawalRequest));
 		updateATMRepo(atmCashDetails);
 		return transactionDetails;
@@ -82,6 +85,10 @@ public class ATMService {
 			log.error("Not all amount can be dispensed. Amount in excess: {}", amountLeftToBeDispensed);
 			throw new ValidationFailedException(HttpStatus.BAD_REQUEST, Message.INSUFFICIENT_ATM_CASH.message());
 		}
+	}
+
+	private DispenserResult initializeDispenserResult(final int amount) {
+		return new DispenserResult(new DispensedCashDetails(), amount);
 	}
 
 }

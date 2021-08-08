@@ -17,6 +17,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.neueda.test.atm.VO.AccountBalance;
+import com.neueda.test.atm.VO.DispensedCashDetails;
 import com.neueda.test.atm.VO.TransactionDetails;
 import com.neueda.test.atm.entity.ATMCashDetails;
 import com.neueda.test.atm.model.WithdrawalRequest;
@@ -65,17 +66,17 @@ public class ATMControllerTest {
 	@Test
 	public void testDebitFromAccount() throws Exception {
 		final AccountBalance accountBalance = new AccountBalance(100.0, 10.0, 110.0);
-		final TransactionDetails transactionDetails = new TransactionDetails(1, 1, 0, 1, accountBalance);
+		final TransactionDetails transactionDetails = new TransactionDetails(new DispensedCashDetails(1, 1, 0, 1), accountBalance);
 		Mockito.when(validationService.validate(ArgumentMatchers.any())).thenReturn(true);
 		Mockito.when(atmService.withdrawAmount(ArgumentMatchers.any())).thenReturn(transactionDetails);
 		final String json = mapper.writeValueAsString(transactionDetails);
 
 		mockMvc.perform(post("/atm/withdraw").contentType(MediaType.APPLICATION_JSON).characterEncoding("utf-8")
 				.content(json).accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
-				.andExpect(jsonPath("$.noOfFiveCurrency", Matchers.equalTo(1)))
-				.andExpect(jsonPath("$.noOfTenCurrency", Matchers.equalTo(1)))
-				.andExpect(jsonPath("$.noOfTwentyCurrency", Matchers.equalTo(0)))
-				.andExpect(jsonPath("$.noOfFiftyCurrency", Matchers.equalTo(1)))
+				.andExpect(jsonPath("$.dispensedCashDetails.noOfFiveCurrency", Matchers.equalTo(1)))
+				.andExpect(jsonPath("$.dispensedCashDetails.noOfTenCurrency", Matchers.equalTo(1)))
+				.andExpect(jsonPath("$.dispensedCashDetails.noOfTwentyCurrency", Matchers.equalTo(0)))
+				.andExpect(jsonPath("$.dispensedCashDetails.noOfFiftyCurrency", Matchers.equalTo(1)))
 				.andExpect(jsonPath("$.accountBalance.regularBalance", Matchers.equalTo(100.0)))
 				.andExpect(jsonPath("$.accountBalance.overDraftBalance", Matchers.equalTo(10.0)))
 				.andExpect(jsonPath("$.accountBalance.maxWithdrawalAmount", Matchers.equalTo(110.0)));

@@ -1,7 +1,7 @@
 package com.neueda.test.atm.dispenser;
 
-import com.neueda.test.atm.VO.TransactionDetails;
 import com.neueda.test.atm.entity.ATMCashDetails;
+import com.neueda.test.atm.model.DispenserResult;
 
 /**
  * 
@@ -10,7 +10,7 @@ import com.neueda.test.atm.entity.ATMCashDetails;
  */
 public interface CurrencyDispenser {
 	
-	Integer dispense(ATMCashDetails atmDetails, TransactionDetails transactionDetails, Integer amount);
+	DispenserResult dispense(ATMCashDetails atmDetails, DispenserResult dispenserResult);
 	
 	void setNextDispenser(CurrencyDispenser nextDispenser);
 

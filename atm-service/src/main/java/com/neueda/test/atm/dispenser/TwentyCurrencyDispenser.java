@@ -1,7 +1,7 @@
 package com.neueda.test.atm.dispenser;
 
-import com.neueda.test.atm.VO.TransactionDetails;
 import com.neueda.test.atm.entity.ATMCashDetails;
+import com.neueda.test.atm.model.DispenserResult;
 import com.neueda.test.atm.utils.CurrencyValue;
 
 import lombok.extern.slf4j.Slf4j;
@@ -17,29 +17,31 @@ public class TwentyCurrencyDispenser implements CurrencyDispenser {
 	private CurrencyDispenser nextDispenser;
 
 	@Override
-	public Integer dispense(final ATMCashDetails atmCashDetails, final TransactionDetails transactionDetails, Integer amount) {
-		log.debug("Running Ten currency dispenser, ATMCashDetails: {}, TransactionDetails: {}, amount: ",
-				atmCashDetails, transactionDetails, amount);
+	public DispenserResult dispense(final ATMCashDetails atmCashDetails, final DispenserResult dispenserResult) {
+		log.debug("Running Ten currency dispenser, ATMCashDetails: {}, TransactionDetails: {}",
+				atmCashDetails, dispenserResult);
 
 		final int noOfTwentyCurrencyInATM = atmCashDetails.getNoOfTwentyCurrency();
-		if (amount >= CurrencyValue.TWENTY.value() && noOfTwentyCurrencyInATM >= 0) {
-			final int numberToBeWithdrawn = amount / CurrencyValue.TWENTY.value();
+		int amountLeftTobeDispensed = dispenserResult.getAmountLeftTobeDispensed();
+		if (amountLeftTobeDispensed >= CurrencyValue.TWENTY.value() && noOfTwentyCurrencyInATM >= 0) {
+			final int numberToBeWithdrawn = amountLeftTobeDispensed / CurrencyValue.TWENTY.value();
 			if (noOfTwentyCurrencyInATM >= numberToBeWithdrawn) {
-				amount = amount % CurrencyValue.TWENTY.value();
+				amountLeftTobeDispensed = amountLeftTobeDispensed % CurrencyValue.TWENTY.value();
 				atmCashDetails.setNoOfTwentyCurrency(noOfTwentyCurrencyInATM - numberToBeWithdrawn);
-				transactionDetails.setNoOfTwentyCurrency(numberToBeWithdrawn);
+				dispenserResult.getDispensedCashDetails().setNoOfTwentyCurrency(numberToBeWithdrawn);
 			} else {
-				amount = amount - noOfTwentyCurrencyInATM * CurrencyValue.TWENTY.value();
-				transactionDetails.setNoOfTwentyCurrency(noOfTwentyCurrencyInATM);
+				amountLeftTobeDispensed = amountLeftTobeDispensed - noOfTwentyCurrencyInATM * CurrencyValue.TWENTY.value();
+				dispenserResult.getDispensedCashDetails().setNoOfTwentyCurrency(noOfTwentyCurrencyInATM);
 				atmCashDetails.setNoOfTwentyCurrency(0);
 			}
+			dispenserResult.setAmountLeftTobeDispensed(amountLeftTobeDispensed);
 		}
 		
-		if (amount > 0 && nextDispenser != null) {
-			return nextDispenser.dispense(atmCashDetails, transactionDetails, amount);
+		if (amountLeftTobeDispensed > 0 && nextDispenser != null) {
+			return nextDispenser.dispense(atmCashDetails, dispenserResult);
 		}
 		
-		return amount;
+		return dispenserResult;
 	}
 
 	@Override

@@ -12,10 +12,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.client.RestTemplate;
 
 import com.neueda.test.atm.VO.AccountBalance;
+import com.neueda.test.atm.VO.DispensedCashDetails;
 import com.neueda.test.atm.VO.TransactionDetails;
 import com.neueda.test.atm.controller.errorHandler.ValidationFailedException;
 import com.neueda.test.atm.dispenser.CurrencyDispenser;
 import com.neueda.test.atm.entity.ATMCashDetails;
+import com.neueda.test.atm.model.DispenserResult;
 import com.neueda.test.atm.model.WithdrawalRequest;
 import com.neueda.test.atm.service.entity.repository.ATMRepository;
 import com.neueda.test.atm.utils.Message;
@@ -74,10 +76,12 @@ public class ATMServiceTest {
 	@Test
 	public void testWithdrawAmountWhenNotAllAmountCanBeDispensed() {
 		final ATMCashDetails atmCashDetails = new ATMCashDetails(10, 5, 10, 5);
+		final DispensedCashDetails dispensedCashDetails = new DispensedCashDetails(1, 1, 1, 1);
+		final DispenserResult  dispenserResult = new DispenserResult(dispensedCashDetails, 2);
 		when(atmRepository.getById(ArgumentMatchers.any())).thenReturn(atmCashDetails);
-		when(currencyDispenser.dispense(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(2);
+		when(currencyDispenser.dispense(Mockito.any(), Mockito.any())).thenReturn(dispenserResult);
 
-		final WithdrawalRequest withdrawalRequest = new WithdrawalRequest();
+		final WithdrawalRequest withdrawalRequest = new WithdrawalRequest(1234567L, 1234, 87);
 		final ValidationFailedException exception = assertThrows(ValidationFailedException.class, () -> {
 			atmService.withdrawAmount(withdrawalRequest);
 		});
@@ -88,14 +92,16 @@ public class ATMServiceTest {
 	@Test
 	public void testWithdrawAmountWhenAllAmountCanBeDispensed() {
 		final ATMCashDetails atmCashDetails = new ATMCashDetails(10, 5, 10, 5);
+		final DispensedCashDetails dispensedCashDetails = new DispensedCashDetails(1, 1, 1, 1);
+		final DispenserResult  dispenserResult = new DispenserResult(dispensedCashDetails, 0);
 		when(atmRepository.getById(ArgumentMatchers.any())).thenReturn(atmCashDetails);
-		when(currencyDispenser.dispense(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(0);
+		when(currencyDispenser.dispense(Mockito.any(), Mockito.any())).thenReturn(dispenserResult);
 
 		final AccountBalance accountBalance = new AccountBalance(100.0, 10.0, 110.0);
 		when(restTemplate.postForObject(Mockito.anyString(), Mockito.any(), Mockito.any())).thenReturn(accountBalance);
 
-		final TransactionDetails transactionDetails = atmService.withdrawAmount(new WithdrawalRequest());
-		assertEquals(accountBalance, transactionDetails.getAccountBalance());
+		final TransactionDetails transactionDetails = atmService.withdrawAmount(new WithdrawalRequest(1234567L, 1234, 85));
+		assertEquals(new TransactionDetails(dispensedCashDetails, accountBalance), transactionDetails);
 	}
 
 }
